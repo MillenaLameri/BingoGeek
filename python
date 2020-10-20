@@ -1,0 +1,135 @@
+
+
+import numpy as np
+import pandas as pd                                                         # Mostra o cartão
+from time import sleep                                                      # Usei para dar pausas no programa                                                           
+
+ # Converte o valor inteiro em hexadecimal
+def converterhex(value):                                                     
+  hexvalor = str(hex(value))
+  return hexvalor
+
+# Gera um número decimal aleatório e
+# retorna seu equivalente hexadecimal convertido
+# pela funcao
+def sortearNumero():
+  value = np.random.randint(16, 159)                                        
+  hexvalor = converterhex(value)                                             
+  return hexvalor[2:]                                                       
+
+
+def checarosnumeros():
+    Numeroatual = sortearNumero()
+
+    while (Numeroatual in pedras):                                          # Desenha um número até obter um
+      Numeroatual = sortearNumero()                                           # valor unico
+
+    pedras.append(Numeroatual)
+    if (Numeroatual in values):                                            # checa se os numeros estão na cartela
+      print('')
+      print('O numero {} está no cartão!!!!'.format(Numeroatual))
+      ponto('espere')                                                        # faz a pontuação
+      print('Pontuação: ', pontos)     
+    else:
+      print('')
+      print('O numero {} infelizmente não está no cartão :(...'.format(Numeroatual))
+      ponto('recieve')
+
+# Criar a Lista Hex randomizada
+# Mesclar todas as listas em uma única matriz
+def cartao():
+    #cria linha por linha
+    hexlist1 = [hex(np.random.randint(16, 159))[2:] for x in range(4)]      
+    hexlist2 = [hex(np.random.randint(16, 159))[2:] for x in range(4)] 
+    hexlist3 = [hex(np.random.randint(16, 159))[2:] for x in range(4)]
+    hexlist4 = [hex(np.random.randint(16, 159))[2:] for x in range(4)]
+   
+    # cria o pandas
+    cartao = np.array([hexlist1, hexlist2, hexlist3, hexlist4])               
+    cartaoPd = pd.DataFrame(cartao,                                             
+                            index=['SORTE 1', 'SORTE 2', 'SORTE 3', 'SORTE 4'], 
+                            columns=['    B', '    IN', '    G', '    O'])
+    values = hexlist1 + hexlist2 + hexlist3 + hexlist4
+
+    return cartaoPd, values
+
+# Aumenta a sequência de perdas, reduzindo
+# os pontos gerais obtidos
+# Aplica a pontuação e zera a sequência
+def ponto(status):
+    global streak
+    global pontos
+    global vitorias
+    if (status == 'demora'):                                   
+      streak += 1                                             
+    elif (status == 'recieve'):
+      pontos += 100 - streak                                   
+      streak = 0
+      vitorias += 1
+
+# Fim de jogo, dependendo do ponto
+def fimDeJogo():
+    global pontos
+    print('sua pontuação é {} pontos.'.format(pontos))          
+
+# Evita a criação de cartaos com numeros repetidos
+def cartaoQuality():                                            
+  global cartao1, values                                        
+  while (len(cartao1) != len(set(cartao1))):
+      cartao1, values = cartao()
+# Jogo principal
+
+opcao = 0
+pedras = []
+streak = 0
+pontos = 0
+vitorias = 0
+
+cartao1, values = cartao()
+cartaoQuality()
+
+nome = input('coloque seu nome: ')
+
+while True:                                                   
+  print('')
+  print('Bingo Geek - Menu:')
+  print('Opção 1: Criar / mostrar cartao: ')
+  print('Opção 2: sortear pedra')
+  print('Opção 3: Grupo Criado Por ')
+  print('Opção 0: sair do jogo')
+
+  opcao = int(input('Escolha suas opções: '))
+
+  if opcao == 0:                                              
+    print('')
+    print('não foi dessa vez')
+    fimDeJogo()
+    break
+    
+  if opcao == 3:                                              
+    print('Feito por Millena Lameri')
+
+
+  elif (opcao != 1 and opcao != 2 and opcao != 3):         
+    print('')
+    print('Opcao incorreta, tente novamente')
+    sleep(2)
+
+  elif (opcao == 2):                                        
+    checarosnumeros()
+    if (vitorias == 16):                                         
+      print('')                                              
+      print('Bingo!')    
+      print('Não foi dessa vez! tente novamente')
+      fimDeJogo() 
+      break                                           
+                                                            
+  elif (opcao == 1):
+    print('')
+    print(nome)
+    print(cartao1)                                              
+    sleep(2)
+
+  else:
+    print('')
+    nome = input('Qual seu nome?: ')                
